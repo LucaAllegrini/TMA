@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Materiali — Tecnologie Elettriche ed Elettroniche</title>
+
+<!-- ======================================================================
+     COME AGGIUNGERE UN MATERIALE
+     1. Metti il file (PDF, ecc.) nella cartella  materiali/
+     2. Scendi qui sotto fino a  ====== ELENCO MATERIALI ======
+     3. Copia una riga { ... } e cambia titolo, descrizione, disciplina,
+        tipo e file. Le sezioni per disciplina si creano da sole.
+     Non serve toccare altro.
+====================================================================== -->
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
+
+<style>
+  :root{
+    --paper:      #F7F6F2;
+    --surface:    #FFFFFF;
+    --ink:        #1A1D1F;
+    --ink-soft:   #5B6670;
+    --copper:     #A85D32;
+    --copper-dk:  #8A4A26;
+    --line:       #E4E1D8;
+    --line-soft:  #EEEBE3;
+    --radius:     14px;
+    --shadow:     0 1px 2px rgba(26,29,31,.04), 0 6px 20px rgba(26,29,31,.05);
+  }
+
+  *{ box-sizing:border-box; margin:0; padding:0; }
+
+  html{ scroll-behavior:smooth; }
+
+  body{
+    font-family:'Inter',system-ui,sans-serif;
+    color:var(--ink);
+    background-color:var(--paper);
+    /* griglia leggera tipo quaderno tecnico */
+    background-image:
+      linear-gradient(var(--line-soft) 1px, transparent 1px),
+      linear-gradient(90deg, var(--line-soft) 1px, transparent 1px);
+    background-size:26px 26px;
+    line-height:1.55;
+    -webkit-font-smoothing:antialiased;
+  }
+
+  .wrap{ max-width:1040px; margin:0 auto; padding:0 24px; }
+
+  /* ---------- HEADER ---------- */
+  header{
+    border-bottom:1px solid var(--line);
+    background:rgba(247,246,242,.85);
+    backdrop-filter:blur(8px);
+    position:sticky; top:0; z-index:20;
+  }
+  .head-inner{ padding:22px 0 20px; }
+  .eyebrow{
+    font-family:'JetBrains Mono',monospace;
+    font-size:11px; font-weight:600; letter-spacing:.14em;
+    text-transform:uppercase; color:var(--copper);
+    display:flex; align-items:center; gap:8px;
+  }
+  .eyebrow::before{
+    content:""; width:18px; height:2px; background:var(--copper); display:inline-block;
+  }
+  h1{
+    font-family:'Space Grotesk',sans-serif;
+    font-weight:700; font-size:clamp(1.5rem,3.5vw,2.05rem);
+    letter-spacing:-.01em; margin:8px 0 4px; line-height:1.1;
+  }
+  .subtitle{ color:var(--ink-soft); font-size:.94rem; }
+
+  /* ---------- SEARCH ---------- */
+  .search-row{ margin-top:20px; display:flex; gap:10px; flex-wrap:wrap; align-items:center; }
+  .search{
+    flex:1 1 280px; position:relative;
+  }
+  .search input{
+    width:100%; font-family:'Inter',sans-serif; font-size:.95rem;
+    padding:11px 14px 11px 40px;
+    border:1px solid var(--line); border-radius:10px;
+    background:var(--surface); color:var(--ink); outline:none;
+    transition:border-color .15s, box-shadow .15s;
+  }
+  .search input:focus{ border-color:var(--copper); box-shadow:0 0 0 3px rgba(168,93,50,.12); }
+  .search svg{ position:absolute; left:13px; top:50%; transform:translateY(-50%); color:var(--ink-soft); }
+
+  /* ---------- FILTER CHIPS ---------- */
+  .chips{ display:flex; gap:8px; flex-wrap:wrap; margin-top:14px; }
+  .chip{
+    font-family:'JetBrains Mono',monospace; font-size:12px; font-weight:500;
+    padding:6px 13px; border:1px solid var(--line); border-radius:999px;
+    background:var(--surface); color:var(--ink-soft); cursor:pointer;
+    transition:all .15s; user-select:none; white-space:nowrap;
+  }
+  .chip:hover{ border-color:var(--copper); color:var(--copper); }
+  .chip.active{ background:var(--ink); border-color:var(--ink); color:var(--paper); }
+
+  /* ---------- SECTIONS ---------- */
+  main{ padding:34px 0 80px; }
+  .discipline{ margin-bottom:44px; scroll-margin-top:120px; }
+  .discipline-head{
+    display:flex; align-items:baseline; gap:12px; margin-bottom:16px;
+    padding-bottom:10px; border-bottom:1px solid var(--line);
+  }
+  .discipline-head h2{
+    font-family:'Space Grotesk',sans-serif; font-weight:600;
+    font-size:1.18rem; letter-spacing:-.005em;
+  }
+  .count{
+    font-family:'JetBrains Mono',monospace; font-size:12px;
+    color:var(--ink-soft); background:var(--line-soft);
+    padding:2px 8px; border-radius:6px;
+  }
+
+  /* ---------- CARDS ---------- */
+  .grid{ display:grid; grid-template-columns:repeat(auto-fill,minmax(300px,1fr)); gap:14px; }
+  .card{
+    background:var(--surface); border:1px solid var(--line);
+    border-radius:var(--radius); padding:18px; box-shadow:var(--shadow);
+    display:flex; flex-direction:column; gap:10px;
+    transition:transform .15s, box-shadow .15s, border-color .15s;
+  }
+  .card:hover{ transform:translateY(-2px); border-color:#D8D2C5;
+    box-shadow:0 2px 4px rgba(26,29,31,.05), 0 12px 28px rgba(26,29,31,.08); }
+  .card-top{ display:flex; align-items:center; justify-content:space-between; gap:8px; }
+  .type-tag{
+    font-family:'JetBrains Mono',monospace; font-size:10.5px; font-weight:600;
+    letter-spacing:.06em; text-transform:uppercase;
+    padding:3px 8px; border-radius:6px;
+  }
+  .type-pdf  { background:#F5E3DC; color:#9A3F22; }
+  .type-doc  { background:#DCE6F2; color:#2E5586; }
+  .type-video{ background:#E7E0F2; color:#5B3E8A; }
+  .type-link { background:#DEEFE4; color:#2C6B47; }
+  .type-img  { background:#F3EAD6; color:#8A6A1E; }
+  .type-other{ background:var(--line-soft); color:var(--ink-soft); }
+  .card h3{ font-family:'Space Grotesk',sans-serif; font-weight:600; font-size:1.02rem; letter-spacing:-.005em; }
+  .card p{ color:var(--ink-soft); font-size:.88rem; flex:1; }
+  .download{
+    display:inline-flex; align-items:center; gap:7px; align-self:flex-start;
+    font-family:'Inter',sans-serif; font-size:.86rem; font-weight:600;
+    color:var(--copper); text-decoration:none; padding:7px 0; margin-top:2px;
+    transition:gap .15s, color .15s;
+  }
+  .download:hover{ gap:11px; color:var(--copper-dk); }
+
+  /* ---------- EMPTY ---------- */
+  .empty{
+    display:none; text-align:center; padding:60px 20px; color:var(--ink-soft);
+    font-family:'Space Grotesk',sans-serif;
+  }
+  .empty.show{ display:block; }
+
+  /* ---------- FOOTER ---------- */
+  footer{
+    border-top:1px solid var(--line); padding:24px 0;
+    font-size:.82rem; color:var(--ink-soft);
+    font-family:'JetBrains Mono',monospace;
+  }
+
+  @media (max-width:520px){
+    .grid{ grid-template-columns:1fr; }
+    .head-inner{ padding:18px 0 16px; }
+  }
+
+  @media (prefers-reduced-motion:reduce){
+    *{ transition:none !important; scroll-behavior:auto !important; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap head-inner">
+    <div class="eyebrow">Materiali del corso</div>
+    <h1>Tecnologie Elettriche ed Elettroniche</h1>
+    <p class="subtitle">Schede, dispense ed esercizi — sempre disponibili da scaricare.</p>
+
+    <div class="search-row">
+      <div class="search">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"></circle><line x1="21" y1="21" x2="16.5" y2="16.5"></line></svg>
+        <input id="search" type="text" placeholder="Cerca un materiale…" autocomplete="off">
+      </div>
+    </div>
+    <div class="chips" id="chips"></div>
+  </div>
+</header>
+
+<main>
+  <div class="wrap">
+    <div id="content"></div>
+    <div class="empty" id="empty">Nessun materiale trovato.</div>
+  </div>
+</main>
+
+<footer>
+  <div class="wrap">Materiali didattici · uso scolastico</div>
+</footer>
+
+<script>
+/* ====================================================================
+   ====== ELENCO MATERIALI ======
+   Ogni materiale è una riga tra parentesi graffe { }.
+   - titolo:      il nome che vedono i ragazzi
+   - descrizione: una riga breve (può restare vuota: "")
+   - disciplina:  raggruppa le schede. Scrivi sempre lo stesso testo
+                  per metterle nella stessa sezione.
+   - tipo:        "pdf" | "doc" | "video" | "link" | "img" | "altro"
+   - file:        nome del file dentro la cartella materiali/
+                  (per un link esterno, incolla qui l'indirizzo http...)
+   ==================================================================== */
+const MATERIALI = [
+
+  {
+    titolo: "Schemi degli impianti civili",
+    descrizione: "Simboli unificati e schemi di base per l'impianto domestico.",
+    disciplina: "Impianti elettrici",
+    tipo: "pdf",
+    file: "materiali/TAG.pdf"
+  },
+  {
+    titolo: "Esercizi sul dimensionamento dei cavi",
+    descrizione: "Portata, caduta di tensione, sezione minima.",
+    disciplina: "Impianti elettrici",
+    tipo: "doc",
+    file: "materiali/dimensionamento-cavi.docx"
+  },
+
+  {
+    titolo: "Diagnosi e ricerca guasti",
+    descrizione: "Metodo di indagine sul motorino di avviamento.",
+    disciplina: "Diagnostica e ricerca guasti",
+    tipo: "pdf",
+    file: "materiali/ricerca-guasti-motorino.pdf"
+  },
+
+  {
+    titolo: "I componenti elettronici di base",
+    descrizione: "Resistori, condensatori, diodi: lettura e funzione.",
+    disciplina: "Elettronica",
+    tipo: "pdf",
+    file: "materiali/componenti-base.pdf"
+  },
+  {
+    titolo: "Simulazione di circuiti — Falstad",
+    descrizione: "Esercitazioni online sul simulatore di circuiti.",
+    disciplina: "Elettronica",
+    tipo: "link",
+    file: "https://www.falstad.com/circuit/"
+  },
+
+  {
+    titolo: "Glossario tecnico inglese",
+    descrizione: "Termini di elettrotecnica EN ⇄ IT.",
+    disciplina: "Inglese tecnico",
+    tipo: "doc",
+    file: "materiali/glossario-tecnico.docx"
+  },
+
+];
+
+/* ====================================================================
+   Da qui in giù è il motore della pagina: non serve modificarlo.
+   ==================================================================== */
+const TIPI = {
+  pdf:  { tag:"PDF",   cls:"type-pdf"  },
+  doc:  { tag:"DOC",   cls:"type-doc"  },
+  video:{ tag:"VIDEO", cls:"type-video"},
+  link: { tag:"LINK",  cls:"type-link" },
+  img:  { tag:"IMG",   cls:"type-img"  },
+  altro:{ tag:"FILE",  cls:"type-other"}
+};
+
+const content = document.getElementById('content');
+const chipsBox = document.getElementById('chips');
+const searchEl = document.getElementById('search');
+const emptyEl  = document.getElementById('empty');
+
+let activeDisc = "tutte";
+let query = "";
+
+// discipline nell'ordine in cui compaiono nell'elenco
+const discipline = [...new Set(MATERIALI.map(m => m.disciplina))];
+
+// chips
+function buildChips(){
+  const all = ["tutte", ...discipline];
+  chipsBox.innerHTML = all.map(d =>
+    `<span class="chip ${d===activeDisc?'active':''}" data-disc="${d}">${d}</span>`
+  ).join("");
+  chipsBox.querySelectorAll('.chip').forEach(c=>{
+    c.addEventListener('click', ()=>{ activeDisc = c.dataset.disc; render(); });
+  });
+}
+
+function iconDownload(tipo){
+  if(tipo==="link") return 'Apri →';
+  return 'Scarica ↓';
+}
+
+function cardHTML(m){
+  const t = TIPI[m.tipo] || TIPI.altro;
+  const ext = m.tipo==="link" ? 'target="_blank" rel="noopener"' : 'download';
+  return `
+    <article class="card" data-disc="${m.disciplina}" data-text="${(m.titolo+' '+m.descrizione+' '+m.disciplina).toLowerCase()}">
+      <div class="card-top">
+        <span class="type-tag ${t.cls}">${t.tag}</span>
+      </div>
+      <h3>${m.titolo}</h3>
+      <p>${m.descrizione||''}</p>
+      <a class="download" href="${m.file}" ${ext}>${iconDownload(m.tipo)}</a>
+    </article>`;
+}
+
+function render(){
+  buildChips();
+  let visibleTotal = 0;
+  content.innerHTML = discipline.map(disc=>{
+    if(activeDisc!=="tutte" && activeDisc!==disc) return "";
+    const items = MATERIALI.filter(m=>{
+      if(m.disciplina!==disc) return false;
+      if(!query) return true;
+      const hay = (m.titolo+' '+m.descrizione+' '+m.disciplina).toLowerCase();
+      return hay.includes(query);
+    });
+    if(items.length===0) return "";
+    visibleTotal += items.length;
+    return `
+      <section class="discipline">
+        <div class="discipline-head">
+          <h2>${disc}</h2>
+          <span class="count">${items.length}</span>
+        </div>
+        <div class="grid">${items.map(cardHTML).join("")}</div>
+      </section>`;
+  }).join("");
+  emptyEl.classList.toggle('show', visibleTotal===0);
+}
+
+searchEl.addEventListener('input', e=>{ query = e.target.value.trim().toLowerCase(); render(); });
+
+render();
+</script>
+</body>
+</html>
